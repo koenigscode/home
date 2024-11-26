@@ -1,0 +1,53 @@
+services:
+  homeassistant:
+    container_name: home-homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - ./config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: home-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    restart: unless-stopped
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+  pv2mqtt:
+    image: ghcr.io/wez/govee2mqtt:latest
+    container_name: home-govee2mqtt
+    restart: unless-stopped
+    env_file:
+      - govee2mqtt.env
+    # Host networking is required
+    network_mode: host
+  plex:
+    container_name: home-plex
+    image: plexinc/pms-docker
+    restart: unless-stopped
+    env_file:
+      - plex.env
+    network_mode: host
+    volumes:
+      - ./plex/config:/config
+      - ./plex/transcode:/transcode
+      - ./plex/media:/data
+  qBittorrentvpn:
+    container_name: home-qBittorrentvpn
+    image: markusmcnugen/qbittorrentvpn
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - "8080:8080"
+      - "8999:8999"
+      - "8999:8999/udp"
+    volumes:
+      - ./qBittorrentvpn:/config
+      - ./plex/media:/downloads
+    env_file:
+      - qBittorrentvpn.env

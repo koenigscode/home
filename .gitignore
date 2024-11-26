@@ -1,0 +1,6 @@
+*env
+/qBittorrentvpn/qBittorrent
+/qBittorrentvpn/openvpn/*ovpn
+/qBittorrentvpn/openvpn/credentials.conf
+/plex
+/config
