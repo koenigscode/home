@@ -36,7 +36,7 @@ services:
     volumes:
       - ./plex/config:/config
       - ./plex/transcode:/transcode
-      - ./plex/media:/data
+      - ./media:/data
   qBittorrentvpn:
     container_name: home-qBittorrentvpn
     image: markusmcnugen/qbittorrentvpn
@@ -51,3 +51,29 @@ services:
       - ./plex/media:/downloads
     env_file:
       - qBittorrentvpn.env
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: home-jellyfin
+    network_mode: 'host'
+    volumes:
+      - ./jellyfin/config:/config
+      - ./pjellyfin/cache:/cache
+      - type: bind
+        source: ./media
+        target: /media
+      # - type: bind
+      #   source: /path/to/media2
+      #   target: /media2
+      #   read_only: true
+      # Optional - extra fonts to be used during transcoding with subtitle burn-in
+      # - type: bind
+      #   source: /path/to/fonts
+      #   target: /usr/local/share/fonts/custom
+      #   read_only: true
+    restart: 'unless-stopped'
+    # Optional - alternative address used for autodiscovery
+    # environment:
+    #   - JELLYFIN_PublishedServerUrl=http://example.com
+    # Optional - may be necessary for docker healthcheck to pass if running in host network mode
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
