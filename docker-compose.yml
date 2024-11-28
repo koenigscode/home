@@ -1,4 +1,12 @@
 services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx_server
+    restart: unless-stopped
+    ports:
+      - "80:80"   
+    volumes:
+      - ./web:/usr/share/nginx/html:ro
   homeassistant:
     container_name: home-homeassistant
     image: "ghcr.io/home-assistant/home-assistant:stable"
@@ -8,7 +16,9 @@ services:
       - /run/dbus:/run/dbus:ro
     restart: unless-stopped
     privileged: true
-    network_mode: host
+      #    network_mode: host
+    ports:
+      - "8123:8123"
   mosquitto:
     image: eclipse-mosquitto:latest
     container_name: home-mosquitto
@@ -48,7 +58,7 @@ services:
       - "8999:8999/udp"
     volumes:
       - ./qBittorrentvpn:/config
-      - ./plex/media:/downloads
+      - ./media:/downloads
     env_file:
       - qBittorrentvpn.env
   jellyfin:
