@@ -99,3 +99,13 @@ services:
       - ./filebrowser/filebrowser.db:/database/filebrowser.db # Mounts the database file
       - ./filebrowser/.filebrowser.json:/.filebrowser.json # Mounts the configuration file
     user: "${UID}:${GID}"
+  speedtest:
+    image: lscr.io/linuxserver/speedtest-tracker:latest
+    container_name: home-speedtest
+    env_file:
+      - speedtest.env
+    volumes:
+      - ./speedtest-tracker/data:/config
+    ports:
+      - 8082:80
+    restart: unless-stopped
