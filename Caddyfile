@@ -1,0 +1,9 @@
+home.mkoe.io {
+	root * ./web
+	file_server
+}
+asl.mkoe.io {
+	reverse_proxy server.local:9090
+	tls mail@mkoe.io
+}
+
