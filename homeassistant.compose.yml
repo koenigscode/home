@@ -1,0 +1,32 @@
+services:
+  homeassistant:
+    container_name: home-homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - ./config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+      # network_mode: host
+    ports:
+      - "8123:8123"
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: home-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    restart: unless-stopped
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+  pv2mqtt:
+    image: ghcr.io/wez/govee2mqtt:latest
+    container_name: home-govee2mqtt
+    restart: unless-stopped
+    env_file:
+      - govee2mqtt.env
+    # Host networking is required
+    network_mode: host

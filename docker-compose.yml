@@ -1,7 +1,11 @@
+include:
+  - homeassistant.compose.yml
+  - arr.compose.yml
+
 services:
   caddy:
     image: caddy:latest
-    container_name: caddy
+    container_name: home-caddy
     ports:
       - "80:80"   # HTTP port for verification
       - "443:443" # HTTPS port
@@ -13,43 +17,12 @@ services:
     network_mode: host
   registry:
     image: registry:2
-    container_name: registry
+    container_name: home-registry
     restart: always
     volumes:
       - ./registry_data:/var/lib/registry  # Store registry data
     ports:
       - "5000:5000"
-  homeassistant:
-    container_name: home-homeassistant
-    image: "ghcr.io/home-assistant/home-assistant:stable"
-    volumes:
-      - ./config:/config
-      - /etc/localtime:/etc/localtime:ro
-      - /run/dbus:/run/dbus:ro
-    restart: unless-stopped
-    privileged: true
-      # network_mode: host
-    ports:
-      - "8123:8123"
-    devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
-  mosquitto:
-    image: eclipse-mosquitto:latest
-    container_name: home-mosquitto
-    ports:
-      - "1883:1883"
-      - "9001:9001"
-    restart: unless-stopped
-    volumes:
-      - ./mosquitto/config:/mosquitto/config
-  pv2mqtt:
-    image: ghcr.io/wez/govee2mqtt:latest
-    container_name: home-govee2mqtt
-    restart: unless-stopped
-    env_file:
-      - govee2mqtt.env
-    # Host networking is required
-    network_mode: host
   plex:
     container_name: home-plex
     image: plexinc/pms-docker
@@ -61,20 +34,6 @@ services:
       - ./plex/config:/config
       - ./plex/transcode:/transcode
       - ./media:/data
-  qBittorrentvpn:
-    container_name: home-qBittorrentvpn
-    image: markusmcnugen/qbittorrentvpn
-    restart: unless-stopped
-    privileged: true
-    ports:
-      - "8080:8080"
-      - "8999:8999"
-      - "8999:8999/udp"
-    volumes:
-      - ./qBittorrentvpn:/config
-      - ./media/downloads:/downloads
-    env_file:
-      - qBittorrentvpn.env
   jellyfin:
     image: jellyfin/jellyfin
     container_name: home-jellyfin
@@ -135,58 +94,4 @@ services:
       - ./books:/books
     ports:
       - 8095:8083
-    restart: unless-stopped
-  radarr:
-    image: lscr.io/linuxserver/radarr:latest
-    container_name: home-radarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Stockholm
-    volumes:
-      - ./radarr/config:/config
-      - ./media:/media
-      - ./media/downloads:/downloads
-    ports:
-      - 7878:7878
-    restart: unless-stopped
-  sonarr:
-    image: lscr.io/linuxserver/sonarr:latest
-    container_name: home-sonarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Stockholm
-    volumes:
-      - ./sonarr/config:/config
-      - ./media:/media
-      - ./media/downloads:/downloads
-    ports:
-      - 8989:8989
-    restart: unless-stopped
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:latest
-    container_name: home-prowlarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Stockholm
-    volumes:
-      - ./prowlarr/config:/config
-    ports:
-      - 9696:9696
-    restart: unless-stopped
-  bazarr:
-    image: lscr.io/linuxserver/bazarr:latest
-    container_name: home-bazarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Stockholm
-    volumes:
-      - ./bazarr/config:/config
-      - ./media:/media #optional
-        # - ./media/series:/tv #optional
-    ports:
-      - 6767:6767
     restart: unless-stopped
