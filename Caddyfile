@@ -1,5 +1,5 @@
-home.mkoe.io {
-	root * ./web
+http://server.local:10000 {
+	root * /var/www/html
 	file_server
 }
 asl.mkoe.io {
