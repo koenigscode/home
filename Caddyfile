@@ -8,6 +8,10 @@ http://server.local:10000 {
 	file_server
 }
 asl.mkoe.io {
+	basic_auth * {
+		# not important enough to put it in an env file :)
+		asl $2a$14$BDAJfYu4HT56DnXXu1RxFOGXds2iagskgrSVXHH2ekUt1o31my8Ua
+	}
 	reverse_proxy server.local:9090
 	tls mail@mkoe.io
 }

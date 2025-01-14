@@ -8,8 +8,8 @@ services:
       - TZ=Europe/Stockholm
     volumes:
       - ./radarr/config:/config
-      - ./media:/media
-      - ./media/downloads:/downloads
+      - /mnt/hdd/media:/media
+      - /mnt/hdd/media/downloads:/downloads
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -22,8 +22,8 @@ services:
       - TZ=Europe/Stockholm
     volumes:
       - ./sonarr/config:/config
-      - ./media:/media
-      - ./media/downloads:/downloads
+      - /mnt/hdd/media:/media
+      - /mnt/hdd/media/downloads:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -48,7 +48,7 @@ services:
       - TZ=Europe/Stockholm
     volumes:
       - ./bazarr/config:/config
-      - ./media:/media #optional
+      - /mnt/hdd/media:/media #optional
         # - ./media/series:/tv #optional
     ports:
       - 6767:6767
@@ -64,6 +64,6 @@ services:
       - "8999:8999/udp"
     volumes:
       - ./qBittorrentvpn:/config
-      - ./media/downloads:/downloads
+      - /mnt/hdd/media/downloads:/downloads
     env_file:
       - qBittorrentvpn.env

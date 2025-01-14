@@ -33,7 +33,7 @@ services:
     volumes:
       - ./plex/config:/config
       - ./plex/transcode:/transcode
-      - ./media:/data
+      - /mnt/hdd/media:/data
   jellyfin:
     image: jellyfin/jellyfin
     container_name: home-jellyfin
@@ -42,7 +42,7 @@ services:
       - ./jellyfin/config:/config
       - ./pjellyfin/cache:/cache
       - type: bind
-        source: ./media
+        source: /mnt/hdd/media
         target: /media
       # - type: bind
       #   source: /path/to/media2
@@ -66,7 +66,8 @@ services:
     ports:
       - "8081:80" 
     volumes:
-      - ./media:/srv               # Mounts the root directory to /srv
+      - /mnt/hdd:/srv/hdd               # Mounts the root directory to /srv
+      - /home/michael/code/asl/recordings:/srv/recordings
       - ./filebrowser/filebrowser.db:/database/filebrowser.db # Mounts the database file
       - ./filebrowser/.filebrowser.json:/.filebrowser.json # Mounts the configuration file
     user: "${UID}:${GID}"
@@ -91,7 +92,7 @@ services:
       - OAUTHLIB_RELAX_TOKEN_SCOPE=1 #optional
     volumes:
       - ./calibre/config:/config
-      - ./books:/books
+      - /mnt/hdd/books:/books
     ports:
       - 8095:8083
     restart: unless-stopped
