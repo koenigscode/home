@@ -83,7 +83,7 @@ services:
     restart: unless-stopped
   calibre-web:
     image: lscr.io/linuxserver/calibre-web:latest
-    container_name: calibre-web
+    container_name: home-calibre-web
     environment:
       - PUID=1000
       - PGID=1000
@@ -96,3 +96,24 @@ services:
     ports:
       - 8095:8083
     restart: unless-stopped
+  portainer:
+    image: portainer/portainer-ce:2.21.5
+    container_name: home-portainer
+    restart: always
+    ports:
+      - "8000:8000"
+      - "9000:9000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer_data:/data
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: home-homepage
+    ports:
+      - 3000:3000
+    volumes:
+      - ./homepage_config:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: "*" # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
